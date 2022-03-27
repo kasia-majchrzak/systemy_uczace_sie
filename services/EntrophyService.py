@@ -19,30 +19,30 @@ class EntrophyService:
 
 
     def ID3(catAttribute, nonCatAttributes=[], trainingSet=[]) -> list:
-        result = list()
-        if trainingSet is None or trainingSet.count() == 0:
-            tree_node = TreeNodeDTO()
-            tree_node.level = 0
-            tree_node.item = "Failure"
-            result.append(tree_node)
-            return result
+        attributesInfos = dict()
+        for idx, attrValuesList in enumerate(nonCatAttributes):
+            info = 0
+            gain = 0
+            valuesCount = len(trainingSet)
+            attributeDict = dict()
+            for attrVal in attrValuesList:
+              attrValCount = 0
+              for row in trainingSet:
+                attrValCount += row.count(attrVal)
 
-        uniqueTrainingValues = set(trainingSet)
+              info += (attrValCount/valuesCount)*math.log(attrValCount/valuesCount, 2)
+              attributeDict[attrVal] = (attrValCount/valuesCount)
 
-        if uniqueTrainingValues.__sizeof__() == 1:
-            tree_node = TreeNodeDTO()
-            tree_node.level = 0
-            tree_node.item = trainingSet[0]
-            result.append(tree_node)
-            return result
+            info = -1 * info
 
-        if nonCatAttributes is None or nonCatAttributes.count() == 0:
-            tree_node = TreeNodeDTO()
-            tree_node.level = 0
-            tree_node.item = max(set(trainingSet), key=trainingSet.count)
-            result.append(tree_node)
-            return result
+            for attrVal in attrValuesList:
+              attributeDict[attrVal] = (attributeDict[attrVal]*info)
 
+            for attrVal in attrValuesList:
+              attributeDict[attrVal] = (attributeDict[attrVal]*info)
 
+            gain = 1 - info
 
-        return result
+            attributesInfos[f'a{idx}'] = { 'idx': idx, 'info': info, 'gain': gain, 'info(ai, T)': attributeDict }
+            print(attributesInfos[f'a{idx}'])
+
