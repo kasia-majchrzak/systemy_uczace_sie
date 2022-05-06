@@ -1,4 +1,5 @@
-from services.EntrophyService import EntrophyService
+from services.ID3 import ID3Service
 
-service = EntrophyService()
-service.loadDataFromFile("D:\\Informatyka II st\\II\\Systemy uczące się\\gielda.txt")
+service = ID3Service("D:\\Informatyka II st\\II\\Systemy uczące się\\car.data", ",", None)
+service.buildDecisionTree()
+service.printDecisionTree()
